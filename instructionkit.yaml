@@ -1,0 +1,6 @@
+name: InstructionKit Official Examples
+description: Curated instruction examples for common development scenarios across Python, JavaScript, testing, API design, security, documentation, and git workflows.
+version: 1.0.0
+author: Troy Larson / InstructionKit
+
+instructions: []
