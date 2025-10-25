@@ -1,6 +1,6 @@
 name: InstructionKit Official Examples
 description: Curated instruction examples for common development scenarios across Python, JavaScript, testing, API design, security, documentation, and git workflows.
-version: 1.0.0
+version: 1.1.0
 author: Troy Larson / InstructionKit
 
 instructions:
@@ -44,3 +44,33 @@ instructions:
     description: Conventional commit message format including types, scopes, descriptions, and breaking change notation
     file: instructions/git-commit-conventions.md
     tags: [git, workflow, conventions, best-practices]
+
+  # React Category
+  - name: react-component-guide
+    description: React functional components and hooks including useState, useEffect, custom hooks, and composition
+    file: instructions/react-component-guide.md
+    tags: [javascript, frontend, react, components, hooks]
+
+  # Security Category (Additional)
+  - name: security-owasp-checklist
+    description: OWASP Top 10 checklist for developers with specific code patterns to prevent common vulnerabilities
+    file: instructions/security-owasp-checklist.md
+    tags: [security, owasp, checklist, best-practices]
+
+  # Documentation Category
+  - name: documentation-standards
+    description: Code documentation guidelines including docstrings, comments, README structure, and API documentation
+    file: instructions/documentation-standards.md
+    tags: [documentation, best-practices, style]
+
+  # TypeScript Category
+  - name: typescript-best-practices
+    description: TypeScript coding standards including type definitions, generics, utility types, and strict mode configuration
+    file: instructions/typescript-best-practices.md
+    tags: [typescript, javascript, frontend, backend, type-safety]
+
+  # DevOps Category
+  - name: docker-best-practices
+    description: Docker best practices including Dockerfile optimization, multi-stage builds, security, and image size reduction
+    file: instructions/docker-best-practices.md
+    tags: [docker, devops, deployment, best-practices]

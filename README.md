@@ -26,14 +26,16 @@ Use the interactive TUI to browse examples, search by tag (e.g., `/python`, `/re
 
 ## What's Included
 
-This repository contains **7 high-quality instruction examples** across essential categories:
+This repository contains **12 high-quality instruction examples** across essential categories:
 
 ### Python Development (2 instructions)
 - **python-best-practices**: Type hints, naming conventions, docstrings, error handling, PEP 8
 - **python-async-patterns**: Async/await, asyncio.gather, error handling in async contexts
 
-### JavaScript (1 instruction)
+### JavaScript/TypeScript (3 instructions)
 - **javascript-modern-patterns**: ES6+, async/await, destructuring, arrow functions, modules
+- **react-component-guide**: Functional components, hooks (useState, useEffect, custom), composition
+- **typescript-best-practices**: Type definitions, generics, utility types, strict mode
 
 ### Testing (1 instruction)
 - **pytest-testing-guide**: Fixtures, parametrization, mocking, test organization
@@ -41,11 +43,18 @@ This repository contains **7 high-quality instruction examples** across essentia
 ### API Design (1 instruction)
 - **api-design-principles**: RESTful resource naming, HTTP methods, status codes, pagination
 
-### Security (1 instruction)
+### Security (2 instructions)
 - **security-guidelines**: Input validation, parameterized queries, secrets management, XSS prevention
+- **security-owasp-checklist**: OWASP Top 10 mapped to code patterns with specific examples
+
+### Documentation (1 instruction)
+- **documentation-standards**: Docstrings, comments, README structure, API documentation
 
 ### Git (1 instruction)
 - **git-commit-conventions**: Conventional Commits format with types, scopes, and descriptions
+
+### DevOps (1 instruction)
+- **docker-best-practices**: Dockerfile optimization, multi-stage builds, security hardening
 
 ---
 
@@ -111,13 +120,19 @@ Use the TUI search feature to find relevant instructions:
 | Search | Shows |
 |--------|-------|
 | `/python` | python-best-practices, python-async-patterns, pytest-testing-guide |
-| `/javascript` | javascript-modern-patterns |
+| `/javascript` | javascript-modern-patterns, react-component-guide, typescript-best-practices |
+| `/react` | react-component-guide |
+| `/typescript` | typescript-best-practices |
 | `/testing` | pytest-testing-guide |
-| `/security` | security-guidelines |
+| `/security` | security-guidelines, security-owasp-checklist |
+| `/owasp` | security-owasp-checklist |
 | `/api-design` | api-design-principles |
+| `/documentation` | documentation-standards |
 | `/git` | git-commit-conventions |
-| `/backend` | python-best-practices, python-async-patterns, api-design-principles |
-| `/frontend` | javascript-modern-patterns, security-guidelines |
+| `/docker` | docker-best-practices |
+| `/devops` | docker-best-practices |
+| `/backend` | python-best-practices, python-async-patterns, api-design-principles, typescript-best-practices |
+| `/frontend` | javascript-modern-patterns, react-component-guide, typescript-best-practices |
 
 ## Contributing
 
