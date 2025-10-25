@@ -3,4 +3,44 @@ description: Curated instruction examples for common development scenarios acros
 version: 1.0.0
 author: Troy Larson / InstructionKit
 
-instructions: []
+instructions:
+  # Python Category
+  - name: python-best-practices
+    description: Modern Python coding standards including type hints, naming conventions, structure, and documentation
+    file: instructions/python-best-practices.md
+    tags: [python, backend, style, best-practices]
+
+  - name: python-async-patterns
+    description: Async/await patterns for modern Python including asyncio, error handling, and concurrent task execution
+    file: instructions/python-async-patterns.md
+    tags: [python, async, backend, patterns]
+
+  # JavaScript Category
+  - name: javascript-modern-patterns
+    description: Modern JavaScript patterns including ES6+, async/await, modules, and functional programming
+    file: instructions/javascript-modern-patterns.md
+    tags: [javascript, frontend, es6, patterns, async]
+
+  # Testing Category
+  - name: pytest-testing-guide
+    description: Pytest patterns including fixtures, parametrization, mocking, and test organization
+    file: instructions/pytest-testing-guide.md
+    tags: [testing, python, unit-testing, pytest, best-practices]
+
+  # API Design Category
+  - name: api-design-principles
+    description: RESTful API design principles covering resource naming, HTTP methods, status codes, and response patterns
+    file: instructions/api-design-principles.md
+    tags: [api-design, rest, backend, best-practices]
+
+  # Security Category
+  - name: security-guidelines
+    description: Security coding patterns including input validation, authentication, secrets management, and common vulnerability prevention
+    file: instructions/security-guidelines.md
+    tags: [security, backend, frontend, best-practices]
+
+  # Git Category
+  - name: git-commit-conventions
+    description: Conventional commit message format including types, scopes, descriptions, and breaking change notation
+    file: instructions/git-commit-conventions.md
+    tags: [git, workflow, conventions, best-practices]
