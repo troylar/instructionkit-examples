@@ -1,12 +1,12 @@
 name: InstructionKit Official Examples
 description: Curated instruction examples for common development scenarios across Python, JavaScript, testing, API design, security, documentation, and git workflows.
-version: 1.3.0
+version: 1.4.0
 author: Troy Larson / InstructionKit
 
 instructions:
   # Python Category
   - name: python-best-practices
-    description: Comprehensive Python 3.9-3.14 best practices with version detection, covering core principles and version-specific features (match/case, exception groups, type parameters, JIT)
+    description: Comprehensive Python 3.9-3.14 best practices with version detection, covering core principles and version-specific features (match/case, exception groups, type parameters, JIT, deferred annotations, template strings, subinterpreters)
     file: instructions/python-best-practices.md
     tags: [python, backend, style, best-practices, python3.9, python3.10, python3.11, python3.12, python3.13, python3.14]
 
