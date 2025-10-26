@@ -1,14 +1,14 @@
 name: InstructionKit Official Examples
 description: Curated instruction examples for common development scenarios across Python, JavaScript, testing, API design, security, documentation, and git workflows.
-version: 1.2.0
+version: 1.3.0
 author: Troy Larson / InstructionKit
 
 instructions:
   # Python Category
   - name: python-best-practices
-    description: Modern Python coding standards including type hints, naming conventions, structure, and documentation
+    description: Comprehensive Python 3.9-3.14 best practices with version detection, covering core principles and version-specific features (match/case, exception groups, type parameters, JIT)
     file: instructions/python-best-practices.md
-    tags: [python, backend, style, best-practices]
+    tags: [python, backend, style, best-practices, python3.9, python3.10, python3.11, python3.12, python3.13, python3.14]
 
   - name: python-async-patterns
     description: Async/await patterns for modern Python including asyncio, error handling, and concurrent task execution
