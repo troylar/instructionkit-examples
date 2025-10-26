@@ -5,12 +5,14 @@ Comprehensive Python best practices covering core principles and version-specifi
 
 ## Automatic Version Detection
 
-**ALWAYS detect the Python version before applying version-specific features:**
+**CRITICAL: ALWAYS detect the Python version before applying version-specific features.**
+
+**DO NOT use features from newer Python versions without checking version compatibility.**
 
 ```python
 import sys
 
-# Get Python version
+# Get Python version - ALWAYS DO THIS FIRST
 PYTHON_VERSION = sys.version_info
 
 # Check for specific versions
@@ -32,9 +34,52 @@ elif PYTHON_VERSION >= (3, 10):
 elif PYTHON_VERSION >= (3, 9):
     # Use Python 3.9+ features
     pass
+else:
+    # Python < 3.9 not supported
+    raise RuntimeError(f"Python 3.9+ required, got {PYTHON_VERSION.major}.{PYTHON_VERSION.minor}")
 
 # Display version in error messages
 print(f"Python {PYTHON_VERSION.major}.{PYTHON_VERSION.minor}.{PYTHON_VERSION.micro}")
+```
+
+**Version Detection Examples:**
+
+```python
+# Example 1: Check before using match/case (Python 3.10+)
+if sys.version_info >= (3, 10):
+    # Use pattern matching
+    match value:
+        case "create": return create_resource()
+        case "delete": return delete_resource()
+else:
+    # Fallback to if/elif
+    if value == "create":
+        return create_resource()
+    elif value == "delete":
+        return delete_resource()
+
+# Example 2: Check before using ExceptionGroup (Python 3.11+)
+if sys.version_info >= (3, 11):
+    try:
+        process_tasks()
+    except* ValueError as eg:
+        handle_value_errors(eg.exceptions)
+else:
+    # Fallback: catch exceptions individually
+    try:
+        process_tasks()
+    except ValueError as e:
+        handle_value_errors([e])
+
+# Example 3: Check before using type parameters (Python 3.12+)
+if sys.version_info >= (3, 12):
+    def first[T](items: list[T]) -> T | None:
+        return items[0] if items else None
+else:
+    from typing import TypeVar
+    T = TypeVar('T')
+    def first(items: list[T]) -> T | None:
+        return items[0] if items else None
 ```
 
 ---
