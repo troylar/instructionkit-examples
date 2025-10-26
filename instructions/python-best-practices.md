@@ -1282,19 +1282,380 @@ async def process_batch_fast(items: list[str]) -> list[str]:
 
 **Available in:** Python 3.14
 
-**Note:** Python 3.14 is in development. Features listed are tentative.
+**Major Language Features:** Deferred annotation evaluation (PEP 649/749), template string literals (PEP 750), multiple interpreters (PEP 734), syntax enhancements (PEP 758/765)
 
-## Tentative Features
+## 1. Deferred Evaluation of Annotations (PEP 649 & 749)
+
+Annotations are no longer eagerly evaluated - they're stored in annotate functions and evaluated only when needed.
 
 ```python
-# Python 3.14+: Tentative features (subject to change)
+# Python 3.14+: Deferred annotations eliminate forward reference strings
+from __future__ import annotations  # No longer needed in 3.14!
+import annotationlib
 
-# Potential improvements to pattern matching
-# Enhanced performance optimizations
-# Further JIT compiler enhancements
-# Additional typing system improvements
+class Node:
+    # No quotes needed - annotations are deferred
+    def add_child(self, child: Node) -> None:
+        pass
 
-# Check official Python 3.14 release notes when available
+    def get_parent(self) -> Node | None:
+        return None
+
+# Inspect annotations with annotationlib
+annotations = annotationlib.get_annotations(Node.add_child)
+# Returns: {'child': <class 'Node'>, 'return': None}
+
+# Three formats available:
+# VALUE: runtime values
+# FORWARDREF: undefined names as markers
+# STRING: string representations
+for name, value in annotationlib.get_annotations(
+    Node.add_child,
+    format=annotationlib.Format.VALUE
+).items():
+    print(f"{name}: {value}")
+```
+
+## 2. Template String Literals (PEP 750)
+
+T-strings enable custom string processing with sanitization and DSL capabilities.
+
+```python
+# Python 3.14+: Template strings for safe SQL/logging
+from string.templatelib import Template, Interpolation
+
+def sql(template: Template) -> str:
+    """Safe SQL query builder using t-strings."""
+    parts = []
+    params = []
+
+    for item in template.args:
+        if isinstance(item, str):
+            parts.append(item)
+        elif isinstance(item, Interpolation):
+            parts.append("?")
+            params.append(item.value)
+
+    query = "".join(parts)
+    # Return parameterized query - prevents SQL injection
+    return query, params
+
+# Usage - prevents SQL injection
+user_input = "'; DROP TABLE users--"
+query, params = sql(t"SELECT * FROM users WHERE name = {user_input}")
+# query: "SELECT * FROM users WHERE name = ?"
+# params: ["'; DROP TABLE users--"]
+
+# Logging with context
+def log(template: Template) -> None:
+    """Structured logging with t-strings."""
+    import json
+
+    message_parts = []
+    context = {}
+
+    for i, item in enumerate(template.args):
+        if isinstance(item, str):
+            message_parts.append(item)
+        elif isinstance(item, Interpolation):
+            placeholder = f"{{var{i}}}"
+            message_parts.append(placeholder)
+            context[f"var{i}"] = item.value
+
+    print(json.dumps({
+        "message": "".join(message_parts),
+        "context": context
+    }))
+
+user_id = 42
+log(t"User {user_id} logged in")
+# {"message": "User {var1} logged in", "context": {"var1": 42}}
+```
+
+## 3. Multiple Interpreters (PEP 734)
+
+True multi-core parallelism with isolated Python interpreters in a single process.
+
+```python
+# Python 3.14+: Subinterpreters for true parallelism (no GIL!)
+import concurrent.interpreters
+from concurrent.futures import InterpreterPoolExecutor
+
+# Create isolated interpreter
+interp = concurrent.interpreters.create()
+concurrent.interpreters.run_string(interp, """
+import sys
+print(f"Running in interpreter {id(sys)}")
+""")
+
+# Pool executor for parallel workloads
+def cpu_intensive_task(n: int) -> int:
+    """Compute fibonacci number."""
+    if n <= 1:
+        return n
+    a, b = 0, 1
+    for _ in range(n - 1):
+        a, b = b, a + b
+    return b
+
+# True parallelism - each interpreter has its own GIL!
+with InterpreterPoolExecutor(max_workers=4) as executor:
+    results = list(executor.map(cpu_intensive_task, range(35, 40)))
+    print(results)
+
+# Actor pattern with interpreters
+class Actor:
+    def __init__(self):
+        self.interp = concurrent.interpreters.create()
+
+    def send_message(self, code: str, **kwargs):
+        """Send message to actor's isolated interpreter."""
+        namespace = concurrent.interpreters.create_namespace(**kwargs)
+        concurrent.interpreters.run_string(self.interp, code, namespace)
+
+    def destroy(self):
+        concurrent.interpreters.destroy(self.interp)
+
+actor = Actor()
+actor.send_message("result = x * 2", x=21)
+actor.destroy()
+```
+
+## 4. Syntax Enhancements
+
+### PEP 758: Multiple Exceptions Without Brackets
+
+```python
+# Python 3.14+: Cleaner exception handling
+try:
+    risky_operation()
+except TimeoutError, ConnectionRefusedError:  # No brackets needed!
+    handle_network_error()
+except ValueError, TypeError:
+    handle_value_error()
+
+# With 'as' clause, brackets still required
+try:
+    risky_operation()
+except (TimeoutError, ConnectionRefusedError) as e:
+    log_error(e)
+```
+
+### PEP 765: Finally Block Exit Warning
+
+```python
+# Python 3.14+: SyntaxWarning for early exit from finally
+def problematic():
+    try:
+        return 1
+    finally:
+        return 2  # SyntaxWarning: return in finally block may swallow exceptions
+
+# Good: Don't exit from finally
+def correct():
+    try:
+        return 1
+    finally:
+        cleanup()  # No return/break/continue
+```
+
+## 5. New Standard Library Modules
+
+### Zstandard Compression (PEP 784)
+
+```python
+# Python 3.14+: Zstandard compression
+import compression.zstd
+import tarfile
+import zipfile
+
+# Compress data with zstd
+data = b"Hello, World!" * 1000
+compressed = compression.zstd.compress(data, level=5)
+decompressed = compression.zstd.decompress(compressed)
+
+# Zstd in tarfiles
+with tarfile.open("archive.tar.zst", "w:zst") as tar:
+    tar.add("myfile.txt")
+
+# Zstd in zipfiles
+with zipfile.ZipFile("archive.zip", "w", compression=zipfile.ZIP_ZSTD) as zf:
+    zf.write("myfile.txt")
+```
+
+## 6. Asyncio Introspection
+
+```python
+# Python 3.14+: Debug running asyncio applications
+import asyncio
+
+async def slow_task():
+    await asyncio.sleep(10)
+
+async def main():
+    # Enable call graph capture
+    asyncio.capture_call_graph()
+
+    task = asyncio.create_task(slow_task())
+    await asyncio.sleep(1)
+
+    # Print call graph
+    asyncio.print_call_graph()
+
+    await task
+
+# Command-line introspection (while app is running):
+# python -m asyncio ps <PID>       # List running tasks
+# python -m asyncio pstree <PID>   # Show task hierarchy
+```
+
+## 7. Performance Improvements
+
+### Incremental Garbage Collection
+
+```python
+# Python 3.14+: Reduced GC pause times
+import gc
+
+# GC is now incremental - much shorter pause times
+# Two generations instead of three
+gc.collect(1)  # Incremental collection (was full gen 1)
+
+# Maximum pause times reduced by orders of magnitude
+# No code changes needed - automatic improvement
+```
+
+### Free-Threaded Mode Performance
+
+```python
+# Python 3.14+: Free-threaded mode is faster
+# Single-threaded penalty reduced to 5-10%
+# Start Python with: python -X free_threading
+
+import sys
+if sys.flags.free_threading:
+    print("Running in free-threaded mode!")
+    # Use threading without GIL limitations
+```
+
+## 8. Built-in Enhancements
+
+```python
+# Python 3.14+: New built-in methods and improvements
+
+# float/complex from_number() class methods
+x = float.from_number(42)
+c = complex.from_number(3.14)
+
+# bytes/bytearray.fromhex() accept bytes-like objects
+data = bytes.fromhex(b"48656c6c6f")
+
+# Thousands separators in float formatting
+value = 1234567.89
+formatted = f"{value:_,.2f}"  # "1_234_567.89"
+formatted = f"{value:,_.2f}"  # "1,234,567.89"
+
+# map() with strict flag (like zip)
+def double(x): return x * 2
+result = list(map(double, [1, 2, 3], strict=True))
+
+# memoryview supports subscription (generic type)
+from typing import TypeVar
+T = TypeVar('T')
+def process_view(mv: memoryview[T]) -> T:
+    return mv[0]
+
+# super objects are now copyable/pickleable
+import copy
+class Child(Parent):
+    def method(self):
+        s = super()
+        s_copy = copy.copy(s)  # Now works!
+```
+
+## 9. REPL Improvements
+
+```python
+# Python 3.14+: Enhanced interactive shell
+
+# Syntax highlighting enabled by default (no config needed)
+# Import auto-completion for modules/submodules
+>>> import async<TAB>
+asyncio  asynchat  asyncore
+
+# Customizable color themes (experimental)
+>>> import _colorize
+>>> _colorize.set_theme("dark")  # or "light"
+
+# Better error messages with suggestions
+>>> whille x < 10:  # SyntaxError: invalid syntax. Did you mean 'while'?
+
+# String prefix compatibility warnings
+>>> u"hello" + b"world"  # Warning: 'u' and 'b' prefixes are incompatible
+```
+
+## 10. Debugging Enhancements
+
+```python
+# Python 3.14+: Remote debugging with pdb
+import pdb
+
+# Attach to running process (zero-overhead when not debugging)
+# python -m pdb -p <PID>
+
+# Debug async tasks
+import asyncio
+
+async def buggy_coroutine():
+    pdb.set_trace_async()  # Debugs async code!
+    await asyncio.sleep(1)
+
+# Access current asyncio task in pdb
+# (Pdb) $_asynctask
+# <Task pending name='buggy_coroutine'>
+
+# Auto-indent in multi-line pdb input
+# (Pdb) def test():
+# ...     print("hello")
+# ...     print("world")
+```
+
+## 11. Other Useful Features
+
+```python
+# Python 3.14+: Miscellaneous improvements
+
+# datetime.date/time.strptime() methods
+from datetime import date, time
+d = date.strptime("2024-01-15", "%Y-%m-%d")
+t = time.strptime("14:30:00", "%H:%M:%S")
+
+# pathlib recursive copy/move
+from pathlib import Path
+src = Path("source_dir")
+dst = Path("dest_dir")
+src.copy(dst, recursive=True)
+src.move(dst, recursive=True)
+
+# getpass with keyboard feedback
+import getpass
+password = getpass.getpass(prompt="Password: ", echo_char="*")
+
+# JSON module as script
+# python -m json input.json  # Pretty-print JSON
+
+# heapq max-heap functions
+import heapq
+max_heap = []
+heapq.heappush_max(max_heap, 5)
+heapq.heappush_max(max_heap, 10)
+largest = heapq.heappop_max(max_heap)  # 10
+
+# Command-line auto-dedent for -c option
+# python -c "
+#     if True:
+#         print('hello')
+# "  # Works without manual dedent!
 ```
 
 ---
@@ -1883,7 +2244,11 @@ use_jit = PYTHON_VERSION >= (3, 13)  # Experimental JIT
 use_readonly = PYTHON_VERSION >= (3, 13)  # ReadOnly type
 
 # Python 3.14+
-# Check for new features when released
+use_deferred_annotations = PYTHON_VERSION >= (3, 14)  # annotationlib
+use_template_strings = PYTHON_VERSION >= (3, 14)  # t"..." strings
+use_subinterpreters = PYTHON_VERSION >= (3, 14)  # concurrent.interpreters
+use_exception_comma_syntax = PYTHON_VERSION >= (3, 14)  # except E1, E2:
+use_zstd_compression = PYTHON_VERSION >= (3, 14)  # compression.zstd
 ```
 
 ---
@@ -1928,7 +2293,15 @@ use_readonly = PYTHON_VERSION >= (3, 13)  # ReadOnly type
 - [ ] Enhanced asyncio performance
 
 ## Python 3.14+ Features
-- [ ] Check official release notes when available
+- [ ] Deferred annotation evaluation (PEP 649/749) with `annotationlib`
+- [ ] Template string literals (PEP 750) with `t"..."` syntax
+- [ ] Multiple interpreters (PEP 734) with `concurrent.interpreters`
+- [ ] Exception comma syntax (PEP 758) `except E1, E2:`
+- [ ] Zstandard compression with `compression.zstd`
+- [ ] Asyncio introspection (`python -m asyncio ps`)
+- [ ] Incremental garbage collection (automatic)
+- [ ] Enhanced REPL with syntax highlighting
+- [ ] Remote debugging with `pdb.set_trace_async()`
 
 ---
 
@@ -1951,4 +2324,4 @@ Apply these practices to:
 - **Python 3.11**: 10-60% faster, exception groups
 - **Python 3.12**: New type parameter syntax, better error messages
 - **Python 3.13**: Experimental JIT, performance improvements
-- **Python 3.14**: Latest features (when released)
+- **Python 3.14**: Deferred annotations, template strings, subinterpreters, performance improvements
