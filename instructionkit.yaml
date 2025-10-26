@@ -1,6 +1,6 @@
 name: InstructionKit Official Examples
 description: Curated instruction examples for common development scenarios across Python, JavaScript, testing, API design, security, documentation, and git workflows.
-version: 1.1.0
+version: 1.2.0
 author: Troy Larson / InstructionKit
 
 instructions:
@@ -74,3 +74,8 @@ instructions:
     description: Docker best practices including Dockerfile optimization, multi-stage builds, security, and image size reduction
     file: instructions/docker-best-practices.md
     tags: [docker, devops, deployment, best-practices]
+
+  - name: terraform-best-practices
+    description: Modern Terraform 1.7+ best practices including OIDC auth, native testing, import blocks, cost optimization, and comprehensive security patterns
+    file: instructions/terraform-best-practices.md
+    tags: [terraform, infrastructure, devops, iac, best-practices]
